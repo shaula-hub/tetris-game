@@ -1,13 +1,10 @@
-//import { useState, useEffect, useCallback } from "react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
 
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
-// const PREVIEW_SIZE = 4;
 
 // Tetromino shapes
-// Tetromino shapes without fixed colors
 const TETROMINO_SHAPES = {
   I: [[1, 1, 1, 1]],
   J: [
@@ -171,33 +168,6 @@ const TetrisGame = () => {
     return newBoard;
   }, [board, currentPiece, position]);
 
-  ////// Guide lines functions
-  // Change from regular function to useCallback
-  /*
-  const updateGuideLines = useCallback(() => {
-    if (!currentPiece) return;
-
-    // Find leftmost and rightmost X positions of the current piece
-    let minX = BOARD_WIDTH;
-    let maxX = -1;
-
-    currentPiece.shape.forEach((row) => {
-      row.forEach((cell, colIndex) => {
-        if (cell) {
-          const absoluteX = position.x + colIndex;
-          minX = Math.min(minX, absoluteX);
-          maxX = Math.max(maxX, absoluteX);
-        }
-      });
-    });
-
-    setGuideLines({
-      left: minX,
-      right: maxX,
-      stopY: BOARD_HEIGHT,
-    });
-  }, [currentPiece, position]);
-*/
   // Clear completed rows
   const clearRows = useCallback((boardToCheck) => {
     const newBoard = boardToCheck.filter((row) => row.some((cell) => !cell));
@@ -370,36 +340,6 @@ const TetrisGame = () => {
     const guidelines = calculateGuidelines(firstPiece, startPosition);
     setGuideLines(guidelines);
   }, [generateRandomPiece, checkGameOver, calculateGuidelines]);
-
-  /*
-  const startGame = useCallback(() => {
-    setGameStarted(false);
-    setShowGameOverDialog(false);
-    const startPosition = { x: Math.floor(BOARD_WIDTH / 2) - 1, y: 0 };
-    const newBoard = createEmptyBoard();
-    const firstPiece = generateRandomPiece();
-    const secondPiece = generateRandomPiece();
-
-    if (checkGameOver(firstPiece, startPosition)) {
-      setBoard(newBoard);
-      setGameOver(true);
-      setShowGameOverDialog(true);
-      return;
-    }
-
-    setBoard(newBoard);
-    setCurrentPiece(firstPiece);
-    setNextPiece(secondPiece);
-    setPosition(startPosition);
-    setGameOver(false);
-    setShowGameOverDialog(false);
-    setScore(0);
-    setGameStarted(true);
-
-    const guidelines = calculateGuidelines(firstPiece, startPosition);
-    setGuideLines(guidelines);
-  }, [generateRandomPiece, checkGameOver, calculateGuidelines]);
-  */
 
   // Handle key presses
   useEffect(() => {
@@ -688,74 +628,6 @@ const TetrisGame = () => {
         setShowGameOverDialog={setShowGameOverDialog}
         setGameStarted={setGameStarted}
       />
-      {/* Game board and controls */}
-      <div className="flex gap-8"></div>
-      <div className="border-2 border-gray-400 p-2 mt-4">
-        <h3 className="text-lg font-bold mb-2">Tetris Debug Panel</h3>
-
-        {/* Current Piece Information */}
-        <div className="mb-4">
-          <h4 className="font-bold">Current Piece:</h4>
-          <div className="grid grid-cols-2 gap-x-4 text-sm">
-            <div>Position:</div>
-            <div>
-              x: {position.x}, y: {position.y}
-            </div>
-            <div>Shape Size:</div>
-            <div>
-              width: {currentPiece?.shape[0]?.length || 0}, height:{" "}
-              {currentPiece?.shape.length || 0}
-            </div>
-            <div>Bottom Edge:</div>
-            <div>y: {position.y + (currentPiece?.shape.length || 0)}</div>
-          </div>
-        </div>
-
-        {/* Guidelines Information */}
-        <div className="mb-4">
-          <h4 className="font-bold">Guidelines:</h4>
-          <div className="grid grid-cols-2 gap-x-4 text-sm">
-            <div>Boundaries:</div>
-            <div>
-              left: {guideLines.left}, right: {guideLines.right}
-            </div>
-            <div>Stopping Y:</div>
-            <div>{guideLines.stopY}</div>
-            <div>Guideline Length:</div>
-            <div>
-              {guideLines.stopY -
-                (position.y + (currentPiece?.shape.length || 0))}
-            </div>
-            <div>Display Check:</div>
-            <div>
-              {currentPiece &&
-              guideLines.left >= 0 &&
-              guideLines.stopY <= BOARD_HEIGHT
-                ? "✓ Showing"
-                : "✗ Hidden"}
-            </div>
-          </div>
-        </div>
-
-        {/* State Checks */}
-        <div>
-          <h4 className="font-bold">Game State:</h4>
-          <div className="grid grid-cols-2 gap-x-4 text-sm">
-            <div>Game Active:</div>
-            <div>{gameStarted ? "✓" : "✗"}</div>
-            <div>Game Over:</div>
-            <div>{gameOver ? "✓" : "✗"}</div>
-          </div>
-        </div>
-      </div>
-      <div>Guidelines Should Show:</div>
-      <div>
-        {Boolean(currentPiece) &&
-        guideLines.left >= 0 &&
-        guideLines.stopY <= BOARD_HEIGHT
-          ? "Yes"
-          : "No"}
-      </div>
     </div>
   );
 };
